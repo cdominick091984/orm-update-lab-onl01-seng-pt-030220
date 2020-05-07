@@ -4,7 +4,7 @@ class Student
 
   def self.create_table
     sql = <<-SQL
-      CREATE TABLE students (
+      CREATE TABLE IF NOT EXISTS students (
       id INTEGER PRIMARY KEY,
       name TEXT,
       grade INTEGER
@@ -35,6 +35,7 @@ class Student
     sql = <<-SQL
       SELECT * FROM students
       WHERE name = ?
+      LIMIT 1
     SQL
 
     DB[:conn].execute(sql, name).map do |row|
@@ -66,8 +67,8 @@ class Student
   end
 
   def update
-    sql = "UPDATE students SET id = ?, name = ?, grade = ?"
-    DB[:conn].execute(sql, self.id, self.name, self.grade)
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
 end
